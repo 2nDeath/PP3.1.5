@@ -12,6 +12,21 @@
         <input hidden="hidden" th:field="*{id}" id="id"/>
         <tr>
             <td>Name</td>
+            <td><input th:field="*{firstName}" id="firstName"/></td>
+            <td th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name Error</td>
+        </tr>
+        <tr>
+            <td>LastName</td>
+            <td><input th:field="*{lastName}" id="lastName"/></td>
+            <td th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name Error</td>
+        </tr>
+        <tr>
+            <td>Age</td>
+            <td><input th:field="*{age}" id="age"/></td>
+            <td th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Name Error</td>
+        </tr>
+        <tr>
+            <td>Username</td>
             <td><input th:field="*{username}" id="username"/></td>
             <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</td>
         </tr>
