@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,38 +26,27 @@ public class AdminController {
 	private RoleRepository roleRepository;
 
 	@GetMapping(value = "/allUsers")
-	public String usersList(ModelMap model) {
+	public String usersList(ModelMap model, Principal principal) {
 		List<User> users = uService.getAllUsers();
 		model.addAttribute("users", users);
-		return "usersList";
-	}
-
-	@GetMapping(value = "/newUser")
-	public String addUser(ModelMap model) {
-		User user = new User();
-		model.addAttribute("user", user);
-		List<Role> roles =  roleRepository.findAll();
-		model.addAttribute("roles", roles);
-		return "addUserForm";
+		User user = (User) uService.loadUserByUsername(principal.getName());
+		model.addAttribute("admin", user);
+		model.addAttribute("newUser", new User());
+		model.addAttribute("roles", roleRepository.findAll());
+		return "admin";
 	}
 
 	@PostMapping(value = "/saveUser")
-	public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return "addUserForm";
-		}
+	public String saveUser(@ModelAttribute("user")User user, BindingResult bindingResult) {
 		uService.saveUser(user);
 		return "redirect:/admin/allUsers";
 	}
 
-	@RequestMapping(value = "/updateUser/{id}")
-	public String updateUser(@PathVariable(name = "id") int id, ModelMap model) {
-		User user = uService.getUser(id);
-		user.setPassword(new String());
-		model.addAttribute("user", user);
-		List<Role> roles =  roleRepository.findAll();
-		model.addAttribute("roles", roles);
-		return "addUserForm";
+	@PostMapping(value = "/updateUser/{id}")
+	public String updateUser(@PathVariable(name = "id") int id, @ModelAttribute("user")User user) {
+		user.setId(id);
+		uService.saveUser(user);
+		return "redirect:/admin/allUsers";
 	}
 
 	@RequestMapping(value = "/deleteUser/{id}")

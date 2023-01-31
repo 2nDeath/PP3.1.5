@@ -130,4 +130,13 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public String rolesToString() {
+        StringBuilder sb = new StringBuilder();
+        for(Role role : roles) {
+            sb.append(role.getName().replace("ROLE_", ""));
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
 }

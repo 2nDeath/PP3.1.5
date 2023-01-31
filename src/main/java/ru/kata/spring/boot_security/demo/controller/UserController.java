@@ -19,7 +19,7 @@ public class UserController {
     UserService userService;
     @GetMapping("/profile")
     public String profile(Principal principal, Model model) {
-        UserDetails user = userService.loadUserByUsername(principal.getName());
+        User user = (User) userService.loadUserByUsername(principal.getName());
         model.addAttribute("user", user);
         return "user";
     }
