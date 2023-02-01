@@ -15,8 +15,14 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    private UserService userService;
+
     @Autowired
-    UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/profile")
     public String profile(Principal principal, Model model) {
         User user = (User) userService.loadUserByUsername(principal.getName());
