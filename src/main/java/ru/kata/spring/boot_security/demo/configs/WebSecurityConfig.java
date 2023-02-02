@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final SuccessUserHandler successUserHandler;
 
     private UserService userService;
