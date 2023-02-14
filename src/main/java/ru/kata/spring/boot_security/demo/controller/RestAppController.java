@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
@@ -15,9 +17,12 @@ import java.util.List;
 public class RestAppController {
     private UserService uService;
 
+    private UserRepository userRepository;
+
     @Autowired
-    public RestAppController(UserService userService) {
+    public RestAppController(UserService userService, UserRepository userRepository) {
         this.uService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping(value = "/getAll")
@@ -42,14 +47,15 @@ public class RestAppController {
         return ResponseEntity.ok(user);
     }
 
-    @RequestMapping(value = "/deleteUser/{id}")
+    @PostMapping(value = "/deleteUser/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") int id) {
         uService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/getAuthUser")
+    @GetMapping(value = "/getAuthUser")
     public ResponseEntity<User> getAuth(Principal principal) {
-        return ResponseEntity.ok((User) principal);
+        User user = (User) uService.loadUserByUsername(principal.getName());
+        return ResponseEntity.ok(user);
     }
 }
